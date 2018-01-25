@@ -8,7 +8,7 @@
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
 {
 	add_ui ();
-	add_mynode (4);
+	add_mynode (2);
 }
 
 void MyViewer::add_ui ()
@@ -26,15 +26,20 @@ void MyViewer::add_mynode ( int n )
 	SnMyNode* c;
 
 	float r=0.15f; // position range
+	float x = 0.0; 
+	float y = 0.0; 
+	float z = float(0.1); 
 	while ( n-->0 )
 	{	c = new SnMyNode;
-		c->init.set ( gs_random(-r,r), gs_random(-r,r), gs_random(-r,r) );
-		c->width = gs_random(0.001f,r);
-		c->height = gs_random(0.001f,r*2);
+		c->init.set ( x, y, z);
+		c->width = r;
+		c->height = float(r + 1.0);
 		c->color ( GsColor::random() );
 		// Example how to print/debug your generated data:
 		// gsout<<n<<": "<<c->color()<<gsnl;
 		rootg()->add(c);
+
+		x = float(x + 0.2); 
 	}
 }
 
