@@ -6,7 +6,7 @@
 # include <sigogl/ui_button.h>
 #include <vector>
 
-static std::vector<SnMyNode*> triangles; 
+static std::vector<SnMyNode*> nodes; 
 
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
 {
@@ -48,6 +48,8 @@ void MyViewer::add_node() { //The function I implemented in lab
 
 	SnMyNode * c; 
 
+	std::vector<char*> name = { "L", "E", "O", "N" }; 
+
 	float r = 0.15f; 
 	float x = 0.0f; 
 	float y = 0.0f; 
@@ -55,22 +57,20 @@ void MyViewer::add_node() { //The function I implemented in lab
 
 	
 
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		c = new SnMyNode;
 		c->init.set(x, y, z);
 		c->width = r;
 		c->width = r;
-		c->color(GsColor::random());
+		c->color(GsColor::black);
 
-		triangles.push_back(c);
+		nodes.push_back(c);
+		nodes.at(i)->shape = name.at(i);
 
-		rootg()->add(triangles.at(i));
+		rootg()->add(nodes.at(i));
 		
 		x = x + 0.5f; 	
 	}
-
-	triangles.at(0)->shape = "L";
-	triangles.at(1)->shape = "E";
 
 	return; 
 }
@@ -89,10 +89,16 @@ int MyViewer::handle_keyboard ( const GsEvent &e )
 		case GsEvent::KeyLeft: 
 			gsout<<"Left\n"; 
 			return 1;
-		case GsEvent::KeyEnter :
-			triangles.at(0)->color(GsColor::darkblue); 	
-			render(); 
-			return 1; 
+		case GsEvent::KeyEnter: 
+		{
+			std::vector<SnMyNode*>::iterator it;
+			for (it = nodes.begin(); it != nodes.end(); ++it) {
+				(*it)->color(GsColor::random());
+				render();
+
+			}
+			return 1;
+		}
 		// etc
 		default: 
 			gsout<<"Key pressed: "<<e.key<<gsnl;
