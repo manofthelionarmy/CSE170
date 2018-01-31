@@ -65,13 +65,33 @@ void GlrMyNode::render ( SnShape* s, GlContext* ctx )
 		float h = c.height;
 		if ( w<=0 || h<=0 ) return; // invalid parameters
 
-		GsArray<GsVec> P(0,6); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
-		P.push() = o;
-		P.push() = o+GsVec(w,0,0);
-		P.push() = o+GsVec(w,h,0);
-		P.push() = o;
-		P.push() = o+GsVec(w,h,0);
-		P.push() = o+GsVec(0,h,0);
+		GsArray<GsVec> P(0,66); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
+
+
+		if (c.shape[0] == 'L') {
+			P.push() = o;
+			P.push() = o + GsVec(w, 0, 0);
+			P.push() = o + GsVec(w, h, 0);
+
+			P.push() = o;
+			P.push() = o + GsVec(w, h, 0);
+			P.push() = o + GsVec(0, h, 0);
+
+			P.push() = o + GsVec(w, 0, 0);
+			P.push() = o + GsVec(2.5f * w, 0, 0);
+			P.push() = o + GsVec(2.5f * w, float(h / 5.0), 0);
+
+
+			P.push() = o + GsVec(w, 0, 0);
+			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
+			P.push() = o + GsVec(w, h / 5.0f, 0);
+		}
+		
+
+
+
+
+	
 
 		glBindVertexArray ( _glo.va[0] );
 		glEnableVertexAttribArray ( 0 );

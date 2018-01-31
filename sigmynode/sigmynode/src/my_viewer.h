@@ -13,7 +13,9 @@ class MyViewer : public WsViewer
    public :
 	MyViewer ( int x, int y, int w, int h, const char* l );
 	void add_ui ();
-	void add_mynode ( int n );
+	void add_mynode ( int n );//the one given in lab; making 2 separate functions for modularity
+	void add_node(); //my implementation for lab 
 	virtual int handle_keyboard ( const GsEvent &e ) override;
 	virtual int uievent ( int e ) override;
+	
 };

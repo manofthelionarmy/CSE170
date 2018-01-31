@@ -8,10 +8,14 @@ class GsFontStyle; // forward declaration
 class UiLabel; // forward declaration
 
 class SnMyNode : public SnShape
-{  public :
+{
+
+   public :
 	GsVec init;
 	float width;
 	float height;
+	const char * shape; //Added this to label shapes
+	
 
    public :
 	static const char* class_name; //<! Contains string SnLines2
