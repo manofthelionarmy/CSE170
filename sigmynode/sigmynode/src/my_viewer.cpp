@@ -5,7 +5,7 @@
 # include <sigogl/gl_tools.h>
 # include <sigogl/ui_button.h>
 #include <vector>
-
+#include <iostream>
 static std::vector<SnMyNode*> nodes; 
 
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
@@ -25,6 +25,7 @@ void MyViewer::add_ui ()
 	p->add ( new UiButton ( "Add", EvAdd ) );
 	p->add ( new UiButton ( "Info", EvInfo ) );
 	p->add ( new UiButton ( "Exit", EvExit ) );
+	p->add(new UiButton("Update", Update)); 
 	
 
 }
@@ -58,7 +59,6 @@ void MyViewer::add_node() { //The function I implemented in lab
 	float x = 0.0f; 
 	float y = 0.0f; 
 	float z = 0.0f; 
-
 	
 
 	for (int i = 0; i < 4; ++i) {
@@ -79,30 +79,18 @@ void MyViewer::add_node() { //The function I implemented in lab
 	return; 
 }
 
-void MyViewer::add_node(float x, float y) { //The function I implemented in lab
+void MyViewer:: update_node(float x, float y) { //The function I implemented in lab
+	
+	std::vector<SnMyNode *>::iterator it; 
 
-	SnMyNode * c;
+	for (it = nodes.begin(); it != nodes.end(); ++it) {
+		(*it)->init.x = x; 
+		(*it)->init.y = y; 
 
-	std::vector<char*> name = { "L", "E", "O", "N" };
-
-	float r = 0.15f;
-	float newX = x;
-	float newY = y;
-	float newZ = 0.0f;
-
-
-
-	for (int i = 0; i < 4; ++i) {
-		c = new SnMyNode;
-		c->init.set(newX, newY, newZ);
-		c->width = r;
-		c->height = 2 * r;
-		c->color(GsColor::black);
-		c->shape = name.at(i);
-
-		nodes.push_back(c);
-
-		rootg()->add(nodes.at(i));
+		(*it)->touch();
+		
+	
+		render(); 
 
 		x = x + 0.5f;
 	}
@@ -223,6 +211,22 @@ int MyViewer::uievent ( int e )
 			activate_ogl_context(); // we need an active context
 			GsOutput o; o.init(output()); gl_print_info(&o); // print info to viewer
 			return 1;
+		}
+		case Update:
+		{
+			float x = 0.0f; 
+			float y = 0.0f; 
+			gsout << "Enter desired origin" << gsnl; 
+			gsout << "X coordinate: "; 
+			std::cin >> x; 
+			gsout << "Y coordinate: "; 
+			std::cin >> y; 
+
+
+
+			update_node(x, y); 
+			
+			return 1; 
 		}
 
 		case EvExit: gs_exit();
