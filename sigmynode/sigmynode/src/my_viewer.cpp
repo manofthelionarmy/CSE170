@@ -11,6 +11,8 @@ static std::vector<SnMyNode*> nodes;
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
 {
 	add_ui ();
+		WsViewer::message("Left Key: Move Left \t\tUp Key: Move Up \t\tRight Key: Move Right \t\tDown Key: Move Down \t\tEnter Key: Change Color");
+
 	//add_mynode (4); //the code provided for the sample code
 	add_node(); 
 }
@@ -23,6 +25,8 @@ void MyViewer::add_ui ()
 	p->add ( new UiButton ( "Add", EvAdd ) );
 	p->add ( new UiButton ( "Info", EvInfo ) );
 	p->add ( new UiButton ( "Exit", EvExit ) );
+	
+
 }
 
 void MyViewer::add_mynode ( int n )
@@ -61,11 +65,11 @@ void MyViewer::add_node() { //The function I implemented in lab
 		c = new SnMyNode;
 		c->init.set(x, y, z);
 		c->width = r;
-		c->width = r;
+		c->height= 2*r;
 		c->color(GsColor::black);
+		c->shape = name.at(i);
 
 		nodes.push_back(c);
-		nodes.at(i)->shape = name.at(i);
 
 		rootg()->add(nodes.at(i));
 		
@@ -74,6 +78,38 @@ void MyViewer::add_node() { //The function I implemented in lab
 
 	return; 
 }
+
+void MyViewer::add_node(float x, float y) { //The function I implemented in lab
+
+	SnMyNode * c;
+
+	std::vector<char*> name = { "L", "E", "O", "N" };
+
+	float r = 0.15f;
+	float newX = x;
+	float newY = y;
+	float newZ = 0.0f;
+
+
+
+	for (int i = 0; i < 4; ++i) {
+		c = new SnMyNode;
+		c->init.set(newX, newY, newZ);
+		c->width = r;
+		c->height = 2 * r;
+		c->color(GsColor::black);
+		c->shape = name.at(i);
+
+		nodes.push_back(c);
+
+		rootg()->add(nodes.at(i));
+
+		x = x + 0.5f;
+	}
+
+	return;
+}
+
 
 
 
@@ -87,8 +123,73 @@ int MyViewer::handle_keyboard ( const GsEvent &e )
 			gs_exit(); 
 			return 1;
 		case GsEvent::KeyLeft: 
-			gsout<<"Left\n"; 
+		{
+			//gsout << "Key pressed: " << e.key << gsnl;
+			
+			std::vector<SnMyNode*>::iterator it;
+			for (it = nodes.begin(); it != nodes.end(); ++it) {
+				
+				(*it)->init.x -= 0.1f; 
+
+				(*it)->touch(); 
+				
+				render();
+				
+			}
+		
 			return 1;
+		}
+		case GsEvent::KeyRight:
+		{
+			//gsout << "Key pressed: " << e.key << gsnl;
+
+			std::vector<SnMyNode*>::iterator it;
+			for (it = nodes.begin(); it != nodes.end(); ++it) {
+				
+				(*it)->init.x += 0.1f;
+
+				(*it)->touch();
+
+				render();
+
+			}
+
+			return 1;
+		}
+		case GsEvent::KeyDown:
+		{
+			//gsout << "Key pressed: " << e.key << gsnl;
+
+			std::vector<SnMyNode*>::iterator it;
+			for (it = nodes.begin(); it != nodes.end(); ++it) {
+				
+				(*it)->init.y -= 0.1f;
+
+				(*it)->touch();
+
+				render();
+
+			}
+
+			return 1;
+		}
+		case GsEvent::KeyUp:
+		{
+			//gsout << "Key pressed: " << e.key << gsnl;
+
+			std::vector<SnMyNode*>::iterator it;
+			for (it = nodes.begin(); it != nodes.end(); ++it) {
+				
+				(*it)->init.y += 0.1f;
+
+				(*it)->touch();
+
+				render();
+
+			}
+
+			return 1;
+		}
 		case GsEvent::KeyEnter: 
 		{
 			std::vector<SnMyNode*>::iterator it;
@@ -99,6 +200,7 @@ int MyViewer::handle_keyboard ( const GsEvent &e )
 			}
 			return 1;
 		}
+		
 		// etc
 		default: 
 			gsout<<"Key pressed: "<<e.key<<gsnl;
