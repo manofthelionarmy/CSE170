@@ -60,108 +60,41 @@ void GlrMyNode::render ( SnShape* s, GlContext* ctx )
 
 	// 1. Set buffer data if node has been changed:
 	if ( s->changed()&SnShape::Changed ) // flags are: Unchanged, RenderModeChanged, MaterialChanged, Changed
-	{	GsPnt o = c.init;
-		float w = c.width;
-		float h = c.height;
-		if ( w<=0 || h<=0 ) return; // invalid parameters
+	{	
+		
+	
+		GsArray<GsVec> P(0,2000); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces) -->PA 2: 360 points for now
+		GsPnt o = c.init; 
+		int prevPhi = 0; 
+		int nextPhi = 0; 
+		
 
-		GsArray<GsVec> P(0,60); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
+		for (nextPhi = 1; nextPhi <= 360; nextPhi++) {
+			std::vector<GsVec>p1 = *(c.GsVecArray.at(prevPhi)); 
+			std::vector<GsVec>p2 = *(c.GsVecArray.at(nextPhi));
 
+			if (p1.size() == p2.size()) {
+				for (int theta = 0; (theta+ 1) <= 360; theta++) {
+					GsVec A = p1.at(theta); 
+					GsVec B = p1.at(theta + 1); 
+					GsVec C = p2.at(theta); 
+					GsVec D = p2.at(theta + 1); 
 
-		if (c.shape[0] == 'L') {
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
+					P.push() = A; 
+					P.push() = C; 
+					P.push() = B; 
 
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
+					P.push() = C; 
+					P.push() = D; 
+					P.push() = B;  
+				}
+			}
 
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-
-
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-			P.push() = o + GsVec(w, h / 5.0f, 0);
-		}
-		if (c.shape[0] == 'E') {
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-
-
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-			P.push() = o + GsVec(w, h / 5.0f, 0);
-
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0); 
-			P.push() = o + GsVec(2.5f * w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(w, h, 0); 
-			
-			P.push() = o + GsVec(w, 2.0f * h / 5.0f, 0); 
-			P.push() = o + GsVec(2.5f * w, 2.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, 3.0f * h/ 5.0f, 0);
-
-			P.push() = o + GsVec(w, 2.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, 3.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(w, 3.0f * h / 5.0f, 0);
-
-		}
-
-		if (c.shape[0] == 'O') {
-
-			P.push() = o; 
-			P.push() = o + GsVec(2.5f * w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
+			prevPhi = nextPhi;
 		}
 		
-		if (c.shape[0] == 'N') {
 
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-
-			P.push() = o + GsVec(w, h - h/5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, h - h / 5.0f, 0); 
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o + GsVec(2.5f * w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w + w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w + w, h, 0);
-
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w + w, h, 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-
-		}
-
+		
 
 
 	

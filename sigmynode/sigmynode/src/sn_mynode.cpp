@@ -35,3 +35,5 @@ void SnMyNodeRegisterRenderer ()
 {
 	SnMyNode::renderer_instantiator = &GlrMyNodeInstantiator;
 }
+
+

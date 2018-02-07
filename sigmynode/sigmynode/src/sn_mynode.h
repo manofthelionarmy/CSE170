@@ -2,6 +2,7 @@
 
 # include <sig/gs_vec.h>
 # include <sig/sn_shape.h>
+#include <vector>
 
 class GsPolygon; // forward declaration
 class GsFontStyle; // forward declaration
@@ -12,8 +13,11 @@ class SnMyNode : public SnShape
 
    public :
 	GsVec init;
-	float width;
-	float height;
+	std::vector<std::vector<GsVec>*> GsVecArray;
+	float width; 
+	float height; 
+	
+
 	const char * shape; //Added this to label shapes
 	
 
@@ -41,3 +45,4 @@ class SnMyNode : public SnShape
 	also allowing connections to diferent renderers when/if needed.
 	In sig there is a single initializer for all included renderers in the sigogl module. */
 void SnMyNodeRegisterRenderer ();
+

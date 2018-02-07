@@ -1,7 +1,7 @@
 
 # include "my_viewer.h"
 # include "sn_mynode.h"
-
+# include <math.h>
 # include <sigogl/gl_tools.h>
 # include <sigogl/ui_button.h>
 #include <vector>
@@ -11,10 +11,12 @@ static std::vector<SnMyNode*> nodes;
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
 {
 	add_ui ();
-		WsViewer::message("Left Key: Move Left \t\tUp Key: Move Up \t\tRight Key: Move Right \t\tDown Key: Move Down \t\tEnter Key: Change Color");
+		//WsViewer::message("Left Key: Move Left \t\tUp Key: Move Up \t\tRight Key: Move Right \t\tDown Key: Move Down \t\tEnter Key: Change Color");
 
 	//add_mynode (4); //the code provided for the sample code
-	add_node(); 
+	//add_node(); 
+
+		torus_node(0.5, 0.5, 20); 
 }
 
 void MyViewer::add_ui ()
@@ -25,9 +27,65 @@ void MyViewer::add_ui ()
 	p->add ( new UiButton ( "Add", EvAdd ) );
 	p->add ( new UiButton ( "Info", EvInfo ) );
 	p->add ( new UiButton ( "Exit", EvExit ) );
-	p->add(new UiButton("Update", Update)); 
+	
 	
 
+}
+
+void MyViewer::torus_node(float r, float R, int n) {
+
+
+	int phi = 0; 
+	int theta = 0; 
+
+	float x = 0.0f; 
+	float y = 0.0f; 
+	float z = 0.0f; 
+
+	SnMyNode *c; 
+
+	 
+	std::vector<GsVec>* points; 
+
+
+	
+	c = new SnMyNode();
+	
+	for (int i = 0; i <= 360; ++i) {
+		c->GsVecArray.push_back(NULL); 
+	}
+	
+
+	for (phi = 0; phi <= 360; phi++) {
+
+		points = new std::vector<GsVec>(361);
+		for (theta = 0; theta <= 360; theta++) {
+			x = float((R + r * cos(theta))*cos(phi));
+			y = float((R + r * cos(theta)) * sin(phi)); 
+			z = float(r * sin(phi)); 			
+
+			GsVec  p =  GsVec(x, y, z);
+
+			points->at(theta) = p; 
+			
+		}
+
+		c->GsVecArray.at(phi) = points; 
+		
+
+		//points->clear(); 
+
+
+
+	}
+
+	c->color(GsColor::darkblue);
+	
+	c->init.set(0.0f, 0.0f, 0.0f); 
+
+	rootg()->add(c); 
+
+	return; 
 }
 
 void MyViewer::add_mynode ( int n )
@@ -46,6 +104,7 @@ void MyViewer::add_mynode ( int n )
 		// Example how to print/debug your generated data:
 		// gsout<<n<<": "<<c->color()<<gsnl;
 		rootg()->add(c);
+
 	}
 }
 
@@ -211,22 +270,6 @@ int MyViewer::uievent ( int e )
 			activate_ogl_context(); // we need an active context
 			GsOutput o; o.init(output()); gl_print_info(&o); // print info to viewer
 			return 1;
-		}
-		case Update:
-		{
-			float x = 0.0f; 
-			float y = 0.0f; 
-			gsout << "Enter desired origin" << gsnl; 
-			gsout << "X coordinate: "; 
-			std::cin >> x; 
-			gsout << "Y coordinate: "; 
-			std::cin >> y; 
-
-
-
-			update_node(x, y); 
-			
-			return 1; 
 		}
 
 		case EvExit: gs_exit();
