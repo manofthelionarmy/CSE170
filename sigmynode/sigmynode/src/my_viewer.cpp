@@ -45,36 +45,48 @@ void MyViewer::torus_node(float r, float R, int n) {
 	SnMyNode *c; 
 
 	 
-	std::vector<GsVec>* points; 
 
 
 	
 	c = new SnMyNode();
+	//c->GsVecArray = new std::vector<std::vector<GsVec>*>(360); 
 	
 	for (int i = 0; i <= 360; ++i) {
-		c->GsVecArray.push_back(NULL); 
+		c->GsVecArray.push_back(new std::vector<GsVec>); 
+		std::vector<GsVec> * v = new std::vector<GsVec>(361);
+		
+		c->GsVecArray.at(i) = v; 
+		//v->clear();
 	}
 	
 
-	for (phi = 0; phi <= 360; phi++) {
+	for (theta = 0; theta <= 360; theta++) {
 
-		points = new std::vector<GsVec>(361);
-		for (theta = 0; theta <= 360; theta++) {
+	
+		for (phi = 0; theta <= 360; phi++) {
 			x = float((R + r * cos(theta))*cos(phi));
-			y = float((R + r * cos(theta)) * sin(phi)); 
-			z = float(r * sin(phi)); 			
+			y = float((R + r * cos(theta)) * sin(phi));
+			z = float(r * sin(phi));
 
-			GsVec  p =  GsVec(x, y, z);
+			GsVec  p = GsVec(x, y, z);
 
-			points->at(theta) = p; 
-			
+
+			try {
+				if (phi > signed(c->GsVecArray.size())) {
+					throw std::out_of_range("phi is > 360)"); 
+				}
+				else if (phi <= signed(c->GsVecArray.size())) {
+					c->GsVecArray.at(phi)->at(theta) = p;
+				}
+				
+			}
+			catch (std::out_of_range &e) {
+				GsString err = e.what(); 
+				gsout << err << "\n"; 
+			}
+
 		}
-
-		c->GsVecArray.at(phi) = points; 
 		
-
-		//points->clear(); 
-
 
 
 	}

@@ -67,30 +67,38 @@ void GlrMyNode::render ( SnShape* s, GlContext* ctx )
 		GsPnt o = c.init; 
 		int prevPhi = 0; 
 		int nextPhi = 0; 
+
+		int prevTheta = 0; 
+		int nextTheta = 0; 
 		
 
-		for (nextPhi = 1; nextPhi <= 360; nextPhi++) {
-			std::vector<GsVec>p1 = *(c.GsVecArray.at(prevPhi)); 
-			std::vector<GsVec>p2 = *(c.GsVecArray.at(nextPhi));
+		for (nextTheta = 1; nextTheta <= 360; nextTheta++) {
+			//std::vector<GsVec>p1 = *(c.GsVecArray.at(prevPhi)); 
+			//std::vector<GsVec>p2 = *(c.GsVecArray.at(nextPhi));
 
-			if (p1.size() == p2.size()) {
-				for (int theta = 0; (theta+ 1) <= 360; theta++) {
-					GsVec A = p1.at(theta); 
-					GsVec B = p1.at(theta + 1); 
-					GsVec C = p2.at(theta); 
-					GsVec D = p2.at(theta + 1); 
+		
 
-					P.push() = A; 
-					P.push() = C; 
-					P.push() = B; 
+			for (nextPhi = 1; nextPhi <= 360; ++prevPhi) {
 
-					P.push() = C; 
-					P.push() = D; 
-					P.push() = B;  
-				}
+				GsVec A = c.GsVecArray.at(prevPhi)->at(prevTheta); 
+				GsVec B = c.GsVecArray.at(prevPhi)->at(nextTheta); 
+				GsVec C = c.GsVecArray.at(nextPhi)->at(prevTheta);
+				GsVec D = c.GsVecArray.at(nextPhi)->at(nextTheta); 
+
+				prevPhi = nextPhi;
+
+				P.push() = A; 
+				P.push() = C; 
+				P.push() = B; 
+
+				P.push() = C; 
+				P.push() = D; 
+				P.push() = B; 
+
 			}
 
-			prevPhi = nextPhi;
+			
+			prevTheta = nextTheta; 
 		}
 		
 
