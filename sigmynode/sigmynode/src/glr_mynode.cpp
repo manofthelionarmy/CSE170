@@ -65,7 +65,7 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 	{
 
 
-		GsArray<GsVec> P(0, 2000); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces) -->PA 2: 360 points for now
+		GsArray<GsVec> P(0, 6); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces) -->PA 2: 360 points for now
 		GsPnt o = c.init;
 		int prevPhi = 0;
 		int nextPhi = 0;
@@ -74,59 +74,67 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 		int nextTheta = 0;
 
 
-		for (nextTheta = 1; nextTheta <= 360; nextTheta++) {
-			//std::vector<GsVec>p1 = *(c.GsVecArray.at(prevPhi)); 
-			//std::vector<GsVec>p2 = *(c.GsVecArray.at(nextPhi));
+		for (nextPhi = 1; nextPhi <= 360 && prevPhi <= 360; ++nextPhi) {
+			try {
+				if (prevPhi > 360) {
+					throw std::out_of_range("prevPhi > 360");
+				}
+				if (nextPhi > 360) {
+					throw std::out_of_range("nextPhi > 360");
+				}
+			
+			}
+			catch (std::out_of_range &e) {
+				gsout << e.what() << gsnl;
+				return;
+			}
+			for (nextTheta = 1; nextTheta <= 360 && prevTheta <= 360; ++nextTheta) {
 
-
-
-			for (nextPhi = 1; nextPhi <= 360; ++prevPhi) {
-
-				GsVec A = GsVec(c.init);
-				GsVec B = GsVec(c.init);
-				GsVec C = GsVec(c.init);
-				GsVec D = GsVec(c.init);
+				GsVec A00; 
+				GsVec A01; 
+				GsVec A10; 
+				GsVec A11; 
 
 				try {
-					if(nextPhi > 360){
-						throw std::out_of_range("phi > 360");
+					if (prevTheta > 360) {
+						throw std::out_of_range("prevTheta > 360");
+					}
+					if(nextTheta > 360){
+						throw std::out_of_range("nextTheta > 360");
+					}
+					else {
+					//Delta Phi:
+						//Phi 1
+						A00 = c.GsVecArray.at(prevPhi)->at(prevTheta); 
+						A01 = c.GsVecArray.at(prevPhi)->at(nextTheta);
+						//Phi 2
+						A10 = c.GsVecArray.at(nextPhi)->at(prevTheta);
+						A11 = c.GsVecArray.at(nextPhi)->at(nextTheta); 
+
+						P.push() = A00; 
+						P.push() = A10; 
+						P.push() = A01; 
+
+						P.push() = A01; 
+						P.push() = A10; 
+						P.push() = A11; 
 
 					}
-					else{
-						A = c.GsVecArray.at(prevPhi)->at(prevTheta);
-						B = c.GsVecArray.at(prevPhi)->at(nextTheta);
-						C = c.GsVecArray.at(nextPhi)->at(prevTheta);
-						D = c.GsVecArray.at(nextPhi)->at(nextTheta);
 
-					}
-
-					
 				}
 				catch (std::out_of_range &e) {
-					
-					gsout << e.what() << "\n"; 
+					gsout << e.what() << gsnl;
 					return;
-
 				}
 
 				
-
-				prevPhi = nextPhi;
-
-				P.push() = A;
-				P.push() = C;
-				P.push() = B;
-
-				P.push() = C;
-				P.push() = D;
-				P.push() = B;
+				prevTheta = nextTheta; 
 
 			}
 
+			prevPhi = nextPhi; 
 
-			prevTheta = nextTheta;
 		}
-
 
 
 
