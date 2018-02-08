@@ -12,6 +12,10 @@ class SnMyNode : public SnShape
 
    public :
 	GsVec init;
+	GsVec A00; 
+	GsVec A01; 
+	GsVec A10; 
+	GsVec A11; 
 	float width;
 	float height;
 	const char * shape; //Added this to label shapes

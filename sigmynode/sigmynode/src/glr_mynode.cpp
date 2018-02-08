@@ -63,106 +63,20 @@ void GlrMyNode::render ( SnShape* s, GlContext* ctx )
 	{	GsPnt o = c.init;
 		float w = c.width;
 		float h = c.height;
-		if ( w<=0 || h<=0 ) return; // invalid parameters
+		//if ( w<=0 || h<=0 ) return; // invalid parameters
 
-		GsArray<GsVec> P(0,60); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
-
-
-		if (c.shape[0] == 'L') {
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
+		GsArray<GsVec> P(0,6); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
 
 
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-			P.push() = o + GsVec(w, h / 5.0f, 0);
-		}
-		if (c.shape[0] == 'E') {
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
 
 
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(2.5f * w, h / 5.0f, 0);
-			P.push() = o + GsVec(w, h / 5.0f, 0);
+		P.push() = c.A00;
+		P.push() = c.A10;
+		P.push() = c.A01;
 
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0); 
-			P.push() = o + GsVec(2.5f * w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(w, h, 0); 
-			
-			P.push() = o + GsVec(w, 2.0f * h / 5.0f, 0); 
-			P.push() = o + GsVec(2.5f * w, 2.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, 3.0f * h/ 5.0f, 0);
-
-			P.push() = o + GsVec(w, 2.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, 3.0f * h / 5.0f, 0);
-			P.push() = o + GsVec(w, 3.0f * h / 5.0f, 0);
-
-		}
-
-		if (c.shape[0] == 'O') {
-
-			P.push() = o; 
-			P.push() = o + GsVec(2.5f * w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-		}
-		
-		if (c.shape[0] == 'N') {
-
-			P.push() = o;
-			P.push() = o + GsVec(w, 0, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o;
-			P.push() = o + GsVec(w, h, 0);
-			P.push() = o + GsVec(0, h, 0);
-
-			P.push() = o + GsVec(w, h - h/5.0f, 0);
-			P.push() = o + GsVec(2.5f * w, h - h / 5.0f, 0); 
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-			P.push() = o + GsVec(w, (h - (h / 5.0f)), 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-			P.push() = o + GsVec(w, h, 0);
-
-			P.push() = o + GsVec(2.5f * w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w + w, 0, 0); 
-			P.push() = o + GsVec(2.5f * w + w, h, 0);
-
-			P.push() = o + GsVec(2.5f * w, 0, 0);
-			P.push() = o + GsVec(2.5f * w + w, h, 0);
-			P.push() = o + GsVec(2.5f * w, h, 0);
-
-
-		}
-
-
+		P.push() = c.A10; 
+		P.push() = c.A11; 
+		P.push() = c.A01; 
 
 	
 

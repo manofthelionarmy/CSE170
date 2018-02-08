@@ -7,14 +7,21 @@
 #include <vector>
 #include <iostream>
 static std::vector<SnMyNode*> nodes; 
-
+static int numTriangles; 
+static float littleR;
+static float bigR; 
 MyViewer::MyViewer ( int x, int y, int w, int h, const char* l ) : WsViewer(x,y,w,h,l)
 {
 	add_ui ();
-		WsViewer::message("Left Key: Move Left \t\tUp Key: Move Up \t\tRight Key: Move Right \t\tDown Key: Move Down \t\tEnter Key: Change Color");
 
 	//add_mynode (4); //the code provided for the sample code
 	add_node(); 
+
+	littleR = 0.1f; 
+	bigR = 0.5f; 
+	numTriangles = 10; 
+
+	torus_node(littleR, bigR, numTriangles);
 }
 
 void MyViewer::add_ui ()
@@ -47,6 +54,68 @@ void MyViewer::add_mynode ( int n )
 		// gsout<<n<<": "<<c->color()<<gsnl;
 		rootg()->add(c);
 	}
+}
+
+GsVec torusFunction(int phi, int theta, float r, float R) {
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+	float alpha = GS_TORAD(float(phi));
+	float beta = GS_TORAD(float(theta));
+
+	x = float(R + r * cosf(alpha))*cosf(beta);
+	y = float(R + r * cosf(alpha)) * sinf(beta);
+	z = float(r * sinf(alpha));
+
+	return GsVec(x, y, z);
+}
+
+void MyViewer::torus_node(float r, float R, int n) {
+	int prevPhi = 0;
+	int prevTheta = 0;
+
+	int nextPhi = 0;
+	int nextTheta = 0;
+
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
+	SnMyNode *c;
+
+
+
+
+
+	//c->GsVecArray = new std::vector<std::vector<GsVec>*>(360); 
+	for (nextPhi = n; prevPhi <= 360; nextPhi+=n) {
+		for (nextTheta = n; nextTheta <= 360; nextTheta+=n) {
+
+			c = new SnMyNode();
+
+			c->A00 = torusFunction(prevPhi, prevTheta, r, R);
+			c->A10 = torusFunction(nextPhi, prevTheta, r, R);
+			c->A01 = torusFunction(prevPhi, nextTheta, r, R);
+			c->A11 = torusFunction(nextPhi, nextTheta, r, R);
+
+			c->color(GsColor::random());
+
+			rootg()->add(c);
+
+			prevTheta = nextTheta; 
+		}
+
+		prevPhi = nextPhi;
+	}
+
+
+
+	//c->init.set(0.2f, 0.2f, 0.2f);
+
+
+
+	return;
+
 }
 
 void MyViewer::add_node() { //The function I implemented in lab
@@ -188,10 +257,59 @@ int MyViewer::handle_keyboard ( const GsEvent &e )
 			}
 			return 1;
 		}
-		
+		case 'q':
+		{
+			++numTriangles; 
+			torus_node(littleR, bigR, numTriangles);
+			render(); 
+			return 1; 
+		}
+		case 'a':
+		{
+			if (numTriangles > 1){
+				--numTriangles;
+			}
+			else {
+				gsout << "Reached the limit to decrease" << gsnl;
+				return 1; 
+			}
+			torus_node(littleR, bigR, numTriangles);
+			render(); 
+			return 1; 
+		}
+		case 'w':
+		{
+			littleR += 0.1f; 
+			torus_node(littleR, bigR, numTriangles); 
+			render();
+			return 1;
+		}
+		case 's': 
+		{
+
+			littleR -= 0.1f;
+			torus_node(littleR, bigR, numTriangles);
+			render();
+			return 1; 
+		}
+		case 'e':
+		{
+			bigR += 0.1f;
+			torus_node(littleR, bigR, numTriangles);
+			render();
+			return 1; 
+		}
+		case 'd':
+		{
+			bigR -= 0.1f; 
+			torus_node(littleR, bigR, numTriangles);
+			render();
+			return 1; 
+		}
 		// etc
 		default: 
 			gsout<<"Key pressed: "<<e.key<<gsnl;
+
 			return 1; 
 	}
 

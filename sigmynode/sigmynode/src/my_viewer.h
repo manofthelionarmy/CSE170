@@ -13,6 +13,7 @@ class MyViewer : public WsViewer
    public :
 	MyViewer ( int x, int y, int w, int h, const char* l );
 	void add_ui ();
+	void torus_node(float r, float R, int n);
 	void add_mynode ( int n );//the one given in lab; making 2 separate functions for modularity
 	void add_node(); //my implementation for lab 
 	void update_node(float x, float y);
