@@ -63,102 +63,20 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 	// 1. Set buffer data if node has been changed:
 	if (s->changed()&SnShape::Changed) // flags are: Unchanged, RenderModeChanged, MaterialChanged, Changed
 	{
-
-
-		GsArray<GsVec> P(0, 6); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces) -->PA 2: 360 points for now
 		GsPnt o = c.init;
-		int prevPhi = 0;
-		int nextPhi = 0;
+		float w = c.width;
+		float h = c.height;
+		if (w <= 0 || h <= 0) return; // invalid parameters
 
-		int prevTheta = 0;
-		int nextTheta = 0;
+		GsArray<GsVec> P(0, 60); // will hold the points forming my triangles (size 0, but pre-allocate 6 spaces)
 
 
-		for (nextPhi = 10; nextPhi <= 360 && prevPhi <= 360; nextPhi += 10) {
+		
 
-			float x1 = c.GsVecArray.at(prevPhi)->at(0).x; 
-			float y1 = c.GsVecArray.at(prevPhi)->at(0).y; 
-			float z1 = c.GsVecArray.at(prevPhi)->at(0).z; 
 
-			float x2 = c.GsVecArray.at(nextPhi)->at(0).x;
-			float y2 = c.GsVecArray.at(nextPhi)->at(0).y;
-			float z2 = c.GsVecArray.at(nextPhi)->at(0).z; 
-
-			GsPnt o1 = GsVec(x1, y1, z1);
-			GsPnt o2 = GsVec(x2, y2, z2);
-			try {
-				if (prevPhi > 360) {
-					throw std::out_of_range("prevPhi > 360");
-				}
-				if (nextPhi > 360) {
-					throw std::out_of_range("nextPhi > 360");
-				}
-			
-			}
-			catch (std::out_of_range &e) {
-				gsout << e.what() << gsnl;
-				return;
-			}
-			for (nextTheta = 10; nextTheta <= 360 && prevTheta <= 360; nextTheta += 10) {
-				
-				GsVec A00; 
-				GsVec A01; 
-				GsVec A10; 
-				GsVec A11; 
-
-				try {
-					if (prevTheta > 360) {
-						throw std::out_of_range("prevTheta > 360");
-					}
-					if(nextTheta > 360){
-						throw std::out_of_range("nextTheta > 360");
-					}
-					else {
-					//Delta Phi:
-						//Phi 1
-						A00 = c.GsVecArray.at(prevPhi)->at(prevTheta); 
-						A01 = c.GsVecArray.at(prevPhi)->at(nextTheta);
-						//Phi 2
-						A10 = c.GsVecArray.at(nextPhi)->at(prevTheta);
-						A11 = c.GsVecArray.at(nextPhi)->at(nextTheta); 
-
-						P.push() = o1; 
-						P.push() = o1 + A00; 
-						P.push() = o1 + A10; 
-
-						P.push() = o1 + A00;
-						P.push() = o1 + A10; 
-						P.push() = o2 + A01; 
-						//P.push() = A00;
-						//P.push() = A01; 
-
-						P.push() = o2; 
-						P.push() = o2 + A01; 
-						P.push() = o2 + A11; 
-						//P.push() = o + A10; 
-
-						
-						P.push() = o1 + A10; 
-						P.push() = o2 + A11;
-						P.push() = o2 + A01;
-
-					}
-
-				}
-				catch (std::out_of_range &e) {
-					gsout << e.what() << gsnl;
-					return;
-				}
-
-				
-				prevTheta = nextTheta; 
-
-			}
-
-			prevPhi = nextPhi; 
-
-		}
-
+		P.push() = c.A00; 
+		P.push() = c.A10;
+		P.push() = c.A01; 
 
 
 

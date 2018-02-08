@@ -7,6 +7,18 @@
 #include <iostream>
 static std::vector<SnMyNode*> nodes;
 
+GsVec torusFunction(int phi, int theta, float r, float R) {
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
+	x = float((R + r * cosf(GS_TORAD(float(theta))))*cosf(GS_TORAD(float(phi))));
+	y = float((R + r * cosf(GS_TORAD(float(theta)))) * sinf(GS_TORAD(float(theta))));
+	z = float(r * sinf(GS_TORAD(float(phi))));
+
+	return GsVec(x, y, z); 
+}
+
 MyViewer::MyViewer(int x, int y, int w, int h, const char* l) : WsViewer(x, y, w, h, l)
 {
 	add_ui();
@@ -34,8 +46,11 @@ void MyViewer::add_ui()
 void MyViewer::torus_node(float r, float R, int n) {
 
 
-	int phi = 0;
-	int theta = 0;
+	int prevPhi = 0;
+	int prevTheta = 0;
+
+	int nextPhi = 0; 
+	int nextTheta = 0; 
 
 	float x = 0.0f;
 	float y = 0.0f;
@@ -43,46 +58,32 @@ void MyViewer::torus_node(float r, float R, int n) {
 
 	SnMyNode *c;
 
-	c = new SnMyNode();
+	
+
+
+	
 	//c->GsVecArray = new std::vector<std::vector<GsVec>*>(360); 
-	c->GsVecArray.resize(361); 
-	for (int i = 0; i <= 360; ++i) {
-		c->GsVecArray.push_back(NULL); 
-	}
-	for (phi = 0; phi <= 360; phi+=1) {
-		std::vector<GsVec> * v = new std::vector<GsVec>;
-		v->resize(361);
-		for (theta = 0; theta <= 360; theta +=1) {
+	for (nextPhi = 1; prevPhi <= 360; ++nextPhi) {
+		for (nextTheta = 1; nextTheta <= 360; ++nextTheta) {
+
+			c = new SnMyNode();
 			
+			c->A00 = torusFunction(prevPhi, prevTheta, r, R); 
+			c->A01 = torusFunction(nextPhi, prevTheta, r, R); 
+			c->A10 = torusFunction(prevPhi, nextTheta, r, R); 
+			c->A11 = torusFunction(nextPhi, nextTheta, r, R);
 
-			x = float((R + r * cosf(GS_TORAD(float(theta))))*cosf(GS_TORAD(float(phi))));
-			y = float((R + r * cosf(GS_TORAD(float(theta)))) * sinf(GS_TORAD(float(phi))));
-			z = float(r * sinf(GS_TORAD(float(phi))));
+			c->color(GsColor::random());
 
-			v->at(theta) = (GsVec(x, y, z));
-			
+			rootg()->add(c);
 		}
-
-		try {
-			if (phi > 360) {
-				throw std::out_of_range("phi > 360");
-				return;
-			}
-			else {
-				c->GsVecArray.at(phi) = v;
-			}
-		}
-		catch (std::out_of_range &e) {
-			gsout << e.what() << gsnl;
-		}
-
 	}
 
-	c->color(GsColor::random());
+	
 
-	c->init.set(0.2f, 0.2f, 0.2f);
+	//c->init.set(0.2f, 0.2f, 0.2f);
 
-	rootg()->add(c);
+
 
 	return;
 }

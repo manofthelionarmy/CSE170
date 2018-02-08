@@ -13,7 +13,10 @@ class SnMyNode : public SnShape
 
 public:
 	GsVec init;
-	std::vector<std::vector<GsVec>*> GsVecArray;
+	GsVec A00;
+	GsVec A01; 
+	GsVec A10; 
+	GsVec A11; 
 	float width;
 	float height;
 
