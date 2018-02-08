@@ -74,7 +74,18 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 		int nextTheta = 0;
 
 
-		for (nextPhi = 1; nextPhi <= 360 && prevPhi <= 360; ++nextPhi) {
+		for (nextPhi = 10; nextPhi <= 360 && prevPhi <= 360; nextPhi += 10) {
+
+			float x1 = c.GsVecArray.at(prevPhi)->at(0).x; 
+			float y1 = c.GsVecArray.at(prevPhi)->at(0).y; 
+			float z1 = c.GsVecArray.at(prevPhi)->at(0).z; 
+
+			float x2 = c.GsVecArray.at(nextPhi)->at(0).x;
+			float y2 = c.GsVecArray.at(nextPhi)->at(0).y;
+			float z2 = c.GsVecArray.at(nextPhi)->at(0).z; 
+
+			GsPnt o1 = GsVec(x1, y1, z1);
+			GsPnt o2 = GsVec(x2, y2, z2);
 			try {
 				if (prevPhi > 360) {
 					throw std::out_of_range("prevPhi > 360");
@@ -88,8 +99,8 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 				gsout << e.what() << gsnl;
 				return;
 			}
-			for (nextTheta = 1; nextTheta <= 360 && prevTheta <= 360; ++nextTheta) {
-
+			for (nextTheta = 10; nextTheta <= 360 && prevTheta <= 360; nextTheta += 10) {
+				
 				GsVec A00; 
 				GsVec A01; 
 				GsVec A10; 
@@ -111,13 +122,25 @@ void GlrMyNode::render(SnShape* s, GlContext* ctx)
 						A10 = c.GsVecArray.at(nextPhi)->at(prevTheta);
 						A11 = c.GsVecArray.at(nextPhi)->at(nextTheta); 
 
-						P.push() = A00; 
-						P.push() = A10; 
-						P.push() = A01; 
+						P.push() = o1; 
+						P.push() = o1 + A00; 
+						P.push() = o1 + A10; 
 
-						P.push() = A01; 
-						P.push() = A10; 
-						P.push() = A11; 
+						P.push() = o1 + A00;
+						P.push() = o1 + A10; 
+						P.push() = o2 + A01; 
+						//P.push() = A00;
+						//P.push() = A01; 
+
+						P.push() = o2; 
+						P.push() = o2 + A01; 
+						P.push() = o2 + A11; 
+						//P.push() = o + A10; 
+
+						
+						P.push() = o1 + A10; 
+						P.push() = o2 + A11;
+						P.push() = o2 + A01;
 
 					}
 

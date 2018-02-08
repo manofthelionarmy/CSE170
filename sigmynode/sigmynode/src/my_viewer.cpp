@@ -15,7 +15,7 @@ MyViewer::MyViewer(int x, int y, int w, int h, const char* l) : WsViewer(x, y, w
 	//add_mynode (4); //the code provided for the sample code
 	//add_node(); 
 
-	torus_node(0.5, 0.5, 20);
+	torus_node(0.1f, 0.1f, 20);
 }
 
 void MyViewer::add_ui()
@@ -43,26 +43,23 @@ void MyViewer::torus_node(float r, float R, int n) {
 
 	SnMyNode *c;
 
-
-
-
-
 	c = new SnMyNode();
 	//c->GsVecArray = new std::vector<std::vector<GsVec>*>(360); 
 	c->GsVecArray.resize(361); 
 	for (int i = 0; i <= 360; ++i) {
 		c->GsVecArray.push_back(NULL); 
 	}
-	for (phi = 0; phi <= 360; ++phi) {
+	for (phi = 0; phi <= 360; phi+=1) {
 		std::vector<GsVec> * v = new std::vector<GsVec>;
-		for (theta = 0; theta <= 360; ++theta) {
+		v->resize(361);
+		for (theta = 0; theta <= 360; theta +=1) {
 			
 
-			x = float((R + r * cos(theta))*cos(phi));
-			y = float((R + r * cos(theta)) * sin(phi));
-			z = float(r * sin(phi));
+			x = float((R + r * cosf(GS_TORAD(float(theta))))*cosf(GS_TORAD(float(phi))));
+			y = float((R + r * cosf(GS_TORAD(float(theta)))) * sinf(GS_TORAD(float(phi))));
+			z = float(r * sinf(GS_TORAD(float(phi))));
 
-			v->push_back(GsVec(x, y, z));
+			v->at(theta) = (GsVec(x, y, z));
 			
 		}
 
@@ -81,9 +78,9 @@ void MyViewer::torus_node(float r, float R, int n) {
 
 	}
 
-	c->color(GsColor::darkblue);
+	c->color(GsColor::random());
 
-	c->init.set(0.0f, 0.0f, 0.0f);
+	c->init.set(0.2f, 0.2f, 0.2f);
 
 	rootg()->add(c);
 
